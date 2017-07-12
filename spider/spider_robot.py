@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
-#coding: utf-8
+# -*- coding: utf-8 -*-
+
 import sys
 import urllib
 import urllib2
@@ -7,6 +8,7 @@ from bs4 import BeautifulSoup
 import sys
 import re
 import threading
+import requests
 #test django
 from django.http import HttpResponse
 
@@ -23,6 +25,14 @@ REGULAR_EXPRESSION = {'baidu_url': 'div.result h3.t > a',
             'baidu_tieba_url': 'a.j_th_tit',
             'weibo_url': 'p.comment_txt'}
 
+
+def requests_test():
+
+    res = requests.get('http://jandan.net/ooxx')
+    html = BeautifulSoup(res.text)
+    for index, each in enumerate(html.select('#comments img')):
+        with open('{}.jpg'.format(index), 'wb') as jpg:
+            jpg.write(requests.get(each.attrs['src'], stream=True).content)
 
 
 def baidu_spider(page_num):
@@ -96,6 +106,7 @@ def get_url_list():
                 ]
     return url_list;
 
+
 def get_page(url_name, page):
 
     page = {
@@ -104,9 +115,11 @@ def get_page(url_name, page):
     }
     return page.get(url_name)
 
+
 def django_web():
 
     return HttpResponse()
+
 
 def timer(page_num):
 
@@ -118,9 +131,11 @@ def timer(page_num):
     t = threading.Timer(20, baidu_spider(page_num))
     t.start()
 
+
 def sys_exit():
 
     sys.exit()
+
 
 if __name__ == "__main__":
 
